@@ -2,7 +2,8 @@ name: Build image
 on: [push]
 
 env:
-  IMAGE: ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}
+  REGISTRY: ghcr.io/${{ github.repository_owner }}
+  IMAGE: ${{ github.event.repository.name }}
 
 jobs:
   build:
@@ -22,7 +23,7 @@ jobs:
     - name: Build image
       uses: redhat-actions/buildah-build@v2
       with:
-        image: ${{ env.IMAGE }}
+        image: ${{ env.REGISTRY }}/${{ env.IMAGE }}
         tags: ${{ github.run_number }}-${{ matrix.variant }}
         containerfiles: |
           ./Containerfile
@@ -33,6 +34,7 @@ jobs:
       uses: redhat-actions/push-to-registry@v2
       if: github.ref == 'refs/heads/main'
       with:
+        registry: ${{ env.REGISTRY }}
         image: ${{ env.IMAGE }}
         tags: ${{ github.run_number }}-${{ matrix.variant }}
         username: ${{ github.actor }}
