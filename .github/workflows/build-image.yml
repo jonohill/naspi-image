@@ -22,7 +22,8 @@ jobs:
     - name: Build image
       uses: redhat-actions/buildah-build@v2
       with:
-        image: ${{ env.IMAGE }}:${{ github.run_number }}-${{ matrix.variant }}
+        image: ${{ env.IMAGE }}
+        tags: ${{ github.run_number }}-${{ matrix.variant }}
         containerfiles: |
           ./Containerfile
         build-args: |
@@ -32,6 +33,7 @@ jobs:
       uses: redhat-actions/push-to-registry@v2
       if: github.ref == 'refs/heads/main'
       with:
-        image: ${{ env.IMAGE }}:${{ github.run_number }}-${{ matrix.variant }}
+        image: ${{ env.IMAGE }}
+        tags: ${{ github.run_number }}-${{ matrix.variant }}
         username: ${{ github.actor }}
         password: ${{ github.token }}
