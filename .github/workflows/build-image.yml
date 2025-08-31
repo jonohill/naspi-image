@@ -1,0 +1,37 @@
+name: Build image
+on: [push]
+
+env:
+  IMAGE: ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}
+
+jobs:
+  build:
+    name: Build image
+    runs-on: ubuntu-24.04-arm
+    strategy:
+      matrix:
+        variant: [rpi, base]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Modify Containerfile for base variant
+      if: matrix.variant == 'base'
+      run: sed -i 's/almalinux-bootc-rpi:/almalinux-bootc:/' Containerfile
+
+    - name: Build image
+      uses: redhat-actions/buildah-build@v2
+      with:
+        image: ${{ env.IMAGE }}:${{ github.run_number }}-${{ matrix.variant }}
+        containerfiles: |
+          ./Containerfile
+        build-args: |
+          NASPI_REPO=${{ github.server_url }}/${{ github.repository }}.git
+
+    - name: Push image
+      uses: redhat-actions/push-to-registry@v2
+      if: github.ref == 'refs/heads/main'
+      with:
+        image: ${{ env.IMAGE }}:${{ github.run_number }}-${{ matrix.variant }}
+        username: ${{ github.actor }}
+        password: ${{ github.token }}

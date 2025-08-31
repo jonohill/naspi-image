@@ -1,0 +1,16 @@
+// filepath: /etc/systemd/system/mnt-mydata.mount
+[Unit]
+Description=Mount My Remote Data
+# Crucial part: This mount unit requires the decryption service to have run successfully
+Requires=decrypt-remote-volume.service
+After=decrypt-remote-volume.service
+
+[Mount]
+# This is the path to the *decrypted* device mapper volume
+What=/dev/mapper/my_decrypted_volume
+Where=/mnt/mydata
+Type=ext4 # Or your filesystem type
+Options=defaults,noatime
+
+[Install]
+WantedBy=multi-user.target # Or wherever you want it in the boot process
