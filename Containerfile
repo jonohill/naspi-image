@@ -6,9 +6,17 @@ COPY disks.txt /tmp/disks.txt
 COPY generate-unlock-services.sh /tmp/generate-unlock-services.sh
 
 RUN dnf install -y \
-        age \
         btrfs-progs \
         gettext
+
+# Download and install the latest version of age
+RUN LATEST_VERSION=$(curl -s https://api.github.com/repos/FiloSottile/age/releases/latest | jq -r '.tag_name') && \
+    curl -L "https://github.com/FiloSottile/age/releases/download/${LATEST_VERSION}/age-${LATEST_VERSION}-linux-arm64.tar.gz" -o /tmp/age.tar.gz && \
+    tar -xzf /tmp/age.tar.gz -C /tmp && \
+    mv /tmp/age/age /usr/local/bin/ && \
+    mv /tmp/age/age-keygen /usr/local/bin/ && \
+    chmod +x /usr/local/bin/age /usr/local/bin/age-keygen && \
+    rm -rf /tmp/age.tar.gz /tmp/age
 
 # Set default repo if not provided
 ARG NASPI_REPO
