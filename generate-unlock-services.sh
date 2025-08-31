@@ -7,7 +7,7 @@ set -e
 
 SCRIPT_DIR="$(dirname "$(realpath "$0")")"
 DISKS_FILE="$SCRIPT_DIR/disks.txt"
-SERVICE_FILE="$SCRIPT_DIR/root/etc/systemd/system/unlock-all-disks.service"
+SERVICE_FILE="/etc/systemd/system/unlock-all-disks.service"
 
 if [ ! -f "$DISKS_FILE" ]; then
     echo "Error: $DISKS_FILE not found" >&2
