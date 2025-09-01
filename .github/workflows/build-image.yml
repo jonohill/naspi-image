@@ -46,8 +46,11 @@ jobs:
 
     - name: Build ISO for base variant
       if: matrix.variant == 'base' && github.ref == 'refs/heads/main'
+      env:
+        IMAGE: ${{ env.REGISTRY }}/${{ env.IMAGE }}:${{ github.run_number }}-${{ matrix.variant }}
       run: |
         mkdir -p output
+        sudo podman pull $IMAGE
         sudo podman run \
           --rm \
           --privileged \
@@ -57,7 +60,7 @@ jobs:
           -v /var/lib/containers/storage:/var/lib/containers/storage \
           quay.io/centos-bootc/bootc-image-builder:latest \
           --type anaconda-iso \
-          ${{ env.REGISTRY }}/${{ env.IMAGE }}:${{ github.run_number }}-${{ matrix.variant }}
+          $IMAGE
 
     - name: Upload ISO artifact
       if: matrix.variant == 'base' && github.ref == 'refs/heads/main'
