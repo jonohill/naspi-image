@@ -44,7 +44,7 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ github.token }}
 
-    - name: Build ISO for base variant
+    - name: Build QCOW2 for base variant
       if: matrix.variant == 'base' && github.ref == 'refs/heads/main'
       env:
         IMAGE: ${{ env.REGISTRY }}/${{ env.IMAGE }}:${{ github.run_number }}-${{ matrix.variant }}
@@ -59,13 +59,14 @@ jobs:
           -v ./output:/output \
           -v /var/lib/containers/storage:/var/lib/containers/storage \
           quay.io/centos-bootc/bootc-image-builder:latest \
-          --type anaconda-iso \
+          --type qcow2 \
           $IMAGE
+        find output
 
-    - name: Upload ISO artifact
+    - name: Upload QCOW2 artifact
       if: matrix.variant == 'base' && github.ref == 'refs/heads/main'
       uses: actions/upload-artifact@v4
       with:
-        name: naspi-base-iso-${{ github.run_number }}
-        path: output/bootiso/install.iso
+        name: naspi-base-qcow2-${{ github.run_number }}
+        path: output/qcow2/disk.qcow2
         retention-days: 30
