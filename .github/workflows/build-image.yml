@@ -43,3 +43,26 @@ jobs:
         tags: ${{ github.run_number }}-${{ matrix.variant }}
         username: ${{ github.actor }}
         password: ${{ github.token }}
+
+    - name: Build ISO for base variant
+      if: matrix.variant == 'base' && github.ref == 'refs/heads/main'
+      run: |
+        mkdir -p output
+        sudo podman run \
+          --rm \
+          --privileged \
+          --pull=newer \
+          --security-opt label=type:unconfined_t \
+          -v ./output:/output \
+          -v /var/lib/containers/storage:/var/lib/containers/storage \
+          quay.io/centos-bootc/bootc-image-builder:latest \
+          --type anaconda-iso \
+          ${{ env.REGISTRY }}/${{ env.IMAGE }}:${{ github.run_number }}-${{ matrix.variant }}
+
+    - name: Upload ISO artifact
+      if: matrix.variant == 'base' && github.ref == 'refs/heads/main'
+      uses: actions/upload-artifact@v4
+      with:
+        name: naspi-base-iso-${{ github.run_number }}
+        path: output/bootiso/install.iso
+        retention-days: 30
