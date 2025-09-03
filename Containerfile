@@ -7,7 +7,8 @@ COPY generate-unlock-services.sh /tmp/generate-unlock-services.sh
 
 RUN dnf install -y \
         btrfs-progs \
-        gettext
+        gettext \
+        git
 
 # Download and install the latest version of age
 RUN LATEST_VERSION=$(curl -s https://api.github.com/repos/FiloSottile/age/releases/latest | jq -r '.tag_name') && \
