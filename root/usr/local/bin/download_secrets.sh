@@ -10,7 +10,7 @@ trap 'rm -rf "$tmp_dir"' EXIT
 git clone --depth 1 --no-checkout "$REPO" "$tmp_dir"
 cd "$tmp_dir"
 git sparse-checkout init --cone
-git sparse-checkout set "secrets/*"
+git sparse-checkout set secrets/
 git checkout
 
 HOST_KEY_PATH="/root/.ssh/host_key"
