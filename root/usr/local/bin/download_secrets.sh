@@ -13,7 +13,7 @@ git sparse-checkout init --cone
 git sparse-checkout set secrets/
 git checkout
 
-HOST_KEY_PATH="/root/.ssh/host_key"
+HOST_KEY_PATH="/etc/ssh/ssh_host_ed25519_key"
 
 # Decrypt/copy over to /run
 cd secrets
