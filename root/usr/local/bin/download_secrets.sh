@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-REPO="${NASPI_REPO}"
+REPO="$NASPI_REPO"
 
 tmp_dir="$(mktemp -d)"
 trap 'rm -rf "$tmp_dir"' EXIT
