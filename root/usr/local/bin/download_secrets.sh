@@ -18,13 +18,13 @@ HOST_KEY_PATH="/etc/ssh/ssh_host_ed25519_key"
 # Decrypt/copy over to /run
 cd secrets
 find . -mindepth 1 -print0 | while IFS= read -r -d $'\0' item; do
-    if [[ "$(basename "$item")" == .git* ]]; then
-        continue
-    fi
-
     if [ -d "$item" ]; then
         mkdir -p "/run/$item"
     elif [ -f "$item" ]; then
+        filename="$(basename "$item")"
+        if [[ "$filename" != *.enc ]]; then
+            continue
+        fi
         age \
             --decrypt \
             --identity "$HOST_KEY_PATH" \
