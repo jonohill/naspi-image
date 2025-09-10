@@ -25,11 +25,13 @@ find . -mindepth 1 -print0 | while IFS= read -r -d $'\0' item; do
         if [[ "$filename" != *.enc ]]; then
             continue
         fi
+        # Remove .enc extension from the output path
+        output_item="${item%.enc}"
         age \
             --decrypt \
             --identity "$HOST_KEY_PATH" \
-            --output "/run/$item" \
+            --output "/run/$output_item" \
             "$item"
-        chmod 600 "/run/$item"
+        chmod 600 "/run/$output_item"
     fi
 done
