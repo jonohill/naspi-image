@@ -24,9 +24,9 @@ ARG NASPI_REPO
 ENV NASPI_REPO=${NASPI_REPO:-https://github.com/jonohill/naspi-image.git}
 
 # Substitute environment variables in shell scripts
-RUN envsubst '$NASPI_REPO' < /usr/local/bin/download_secrets.sh > /tmp/download_secrets.sh && \
-    mv /tmp/download_secrets.sh /usr/local/bin/download_secrets.sh && \
-    chmod +x /usr/local/bin/download_secrets.sh
+RUN envsubst '$NASPI_REPO' < /usr/local/sbin/download_secrets.sh > /tmp/download_secrets.sh && \
+    mv /tmp/download_secrets.sh /usr/local/sbin/download_secrets.sh && \
+    chmod +x /usr/local/sbin/download_secrets.sh
 
 # Generate unlock-all-disks.service based on disks.txt
 RUN chmod +x /tmp/generate-unlock-services.sh && \
