@@ -78,7 +78,6 @@ RUN envsubst '$NASPI_REPO' < /usr/local/sbin/download_secrets.sh > /tmp/download
     chmod +x /usr/local/sbin/download_secrets.sh
 
 # Generate unlock-all-disks.service based on disks.txt
-RUN --mount=type=bind,source=disks.txt,target=/mnt/disks.txt \
-    --mount=type=bind,source=generate-unlock-services.sh,target=/mnt/generate-unlock-services.sh \
-    cd /mnt && \
-    ./generate-unlock-services.sh
+RUN --mount=type=bind,source=disks.txt,target=/disks.txt \
+    --mount=type=bind,source=generate-unlock-services.sh,target=/generate-unlock-services.sh \
+    /generate-unlock-services.sh
