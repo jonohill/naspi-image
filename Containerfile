@@ -1,14 +1,64 @@
-FROM quay.io/almalinuxorg/almalinux-bootc-rpi:10-kitten
+FROM quay.io/almalinuxorg/almalinux-bootc-rpi:10 AS base
+
+# Build stage for ZFS packages
+# (not published for arm64)
+FROM base AS zfs-builder
+
+RUN dnf install -y \
+        epel-release \
+        rpm-build \
+        rpmdevtools
+
+RUN mkdir -p /tmp/rpmbuild/{BUILD,BUILDROOT,RPMS,SOURCES,SPECS,SRPMS}
+
+RUN cd /tmp && \
+    curl -O http://download.zfsonlinux.org/epel/10/SRPMS/zfs-dkms-2.2.8-1.el10.src.rpm && \
+    curl -O http://download.zfsonlinux.org/epel/10/SRPMS/zfs-2.2.8-1.el10.src.rpm && \
+    rpm -ivh --define "_topdir /tmp/rpmbuild" zfs-dkms-2.2.8-1.el10.src.rpm && \
+    rpm -ivh --define "_topdir /tmp/rpmbuild" zfs-2.2.8-1.el10.src.rpm
+
+RUN dnf builddep -y \
+        /tmp/rpmbuild/SPECS/zfs-dkms.spec \
+        /tmp/rpmbuild/SPECS/zfs.spec
+
+RUN rpmbuild --define "_topdir /tmp/rpmbuild" -bb /tmp/rpmbuild/SPECS/zfs-dkms.spec && \
+    rpmbuild --define "_topdir /tmp/rpmbuild" -bb /tmp/rpmbuild/SPECS/zfs.spec
+
+# Final stage
+FROM base
 
 # Copy files first
 COPY root/ /
-COPY disks.txt /tmp/disks.txt
-COPY generate-unlock-services.sh /tmp/generate-unlock-services.sh
 
 RUN dnf install -y \
-        btrfs-progs \
+        epel-release \
         gettext \
-        git
+    git \
+    jq
+
+# Install correct kernel headers
+RUN if rpm -q raspberrypi2-kernel4 &> /dev/null; then \
+        dnf install -y raspberrypi2-kernel4-devel; \
+    else \
+        dnf install -y kernel-devel; \
+    fi
+
+# Build kernel module for zfs
+RUN \
+    --mount=from=zfs-builder,source=/tmp/rpmbuild/RPMS,target=/mnt/zfs-rpms \
+    --mount=type=bind,source=dkms.sh,target=/mnt/dkms.sh \
+    export KERNEL_VERSION="$(ls /usr/lib/modules)" && \
+    echo "Kernel version: $KERNEL_VERSION" && \
+    dnf install -y /mnt/zfs-rpms/noarch/zfs-dkms-*.rpm && \
+    dkms autoinstall -k "$KERNEL_VERSION" && \
+    dnf install -y \
+        /mnt/zfs-rpms/aarch64/libnvpair3-*.rpm \
+        /mnt/zfs-rpms/aarch64/libuutil3-*.rpm \
+        /mnt/zfs-rpms/aarch64/libzfs5-*.rpm \
+        /mnt/zfs-rpms/aarch64/libzpool5-*.rpm \
+        /mnt/zfs-rpms/aarch64/zfs-*.rpm \
+        /mnt/zfs-rpms/noarch/python3-pyzfs-*.rpm \
+        /mnt/zfs-rpms/noarch/zfs-dracut-*.rpm
 
 # Download and install the latest version of age
 RUN LATEST_VERSION=$(curl -s https://api.github.com/repos/FiloSottile/age/releases/latest | jq -r '.tag_name') && \
@@ -29,7 +79,7 @@ RUN envsubst '$NASPI_REPO' < /usr/local/sbin/download_secrets.sh > /tmp/download
     chmod +x /usr/local/sbin/download_secrets.sh
 
 # Generate unlock-all-disks.service based on disks.txt
-RUN chmod +x /tmp/generate-unlock-services.sh && \
-    cd /tmp && \
-    ./generate-unlock-services.sh && \
-    rm -f /tmp/disks.txt /tmp/generate-unlock-services.sh
+RUN --mount=type=bind,source=disks.txt,target=/mnt/disks.txt \
+    --mount=type=bind,source=generate-unlock-services.sh,target=/mnt/generate-unlock-services.sh \
+    cd /mnt && \
+    ./generate-unlock-services.sh
