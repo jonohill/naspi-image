@@ -45,19 +45,19 @@ RUN if rpm -q raspberrypi2-kernel4 &> /dev/null; then \
 
 # Build kernel module for zfs
 RUN \
-    --mount=from=zfs-builder,source=/tmp/rpmbuild/RPMS,target=/mnt/zfs-rpms \
+    --mount=from=zfs-builder,source=/tmp/rpmbuild/RPMS,target=/zfs-rpms \
     export KERNEL_VERSION="$(ls /usr/lib/modules)" && \
     echo "Kernel version: $KERNEL_VERSION" && \
-    dnf install -y /mnt/zfs-rpms/noarch/zfs-dkms-*.rpm && \
+    dnf install -y /zfs-rpms/noarch/zfs-dkms-*.rpm && \
     dkms autoinstall -k "$KERNEL_VERSION" && \
     dnf install -y \
-        /mnt/zfs-rpms/aarch64/libnvpair3-*.rpm \
-        /mnt/zfs-rpms/aarch64/libuutil3-*.rpm \
-        /mnt/zfs-rpms/aarch64/libzfs5-*.rpm \
-        /mnt/zfs-rpms/aarch64/libzpool5-*.rpm \
-        /mnt/zfs-rpms/aarch64/zfs-*.rpm \
-        /mnt/zfs-rpms/noarch/python3-pyzfs-*.rpm \
-        /mnt/zfs-rpms/noarch/zfs-dracut-*.rpm
+        /zfs-rpms/aarch64/libnvpair3-*.rpm \
+        /zfs-rpms/aarch64/libuutil3-*.rpm \
+        /zfs-rpms/aarch64/libzfs5-*.rpm \
+        /zfs-rpms/aarch64/libzpool5-*.rpm \
+        /zfs-rpms/aarch64/zfs-*.rpm \
+        /zfs-rpms/noarch/python3-pyzfs-*.rpm \
+        /zfs-rpms/noarch/zfs-dracut-*.rpm
 
 # Download and install the latest version of age
 RUN LATEST_VERSION=$(curl -s https://api.github.com/repos/FiloSottile/age/releases/latest | jq -r '.tag_name') && \
