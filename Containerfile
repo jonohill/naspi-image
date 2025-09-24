@@ -46,7 +46,6 @@ RUN if rpm -q raspberrypi2-kernel4 &> /dev/null; then \
 # Build kernel module for zfs
 RUN \
     --mount=from=zfs-builder,source=/tmp/rpmbuild/RPMS,target=/mnt/zfs-rpms \
-    --mount=type=bind,source=dkms.sh,target=/mnt/dkms.sh \
     export KERNEL_VERSION="$(ls /usr/lib/modules)" && \
     echo "Kernel version: $KERNEL_VERSION" && \
     dnf install -y /mnt/zfs-rpms/noarch/zfs-dkms-*.rpm && \
