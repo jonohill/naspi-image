@@ -1,14 +1,15 @@
 [Unit]
 Description=Load ZFS encryption keys
 DefaultDependencies=no
-After=zfs-import.target
+After=zfs-import.target download-secrets.service
 Before=zfs-mount.service
+Requires=download-secrets.service
 
 [Service]
 Type=oneshot
 RemainAfterExit=yes
 ExecStart=/usr/sbin/zfs load-key -a
-StandardInput=tty-force
 
 [Install]
-WantedBy=zfs-mount.service
+WantedBy=multi-user.target
+RequiredBy=zfs-mount.service
