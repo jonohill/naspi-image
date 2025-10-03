@@ -76,8 +76,3 @@ ENV NASPI_REPO=${NASPI_REPO:-https://github.com/jonohill/naspi-image.git}
 RUN envsubst '$NASPI_REPO' < /usr/local/sbin/download_secrets.sh > /tmp/download_secrets.sh && \
     mv /tmp/download_secrets.sh /usr/local/sbin/download_secrets.sh && \
     chmod +x /usr/local/sbin/download_secrets.sh
-
-# Generate unlock-all-disks.service based on disks.txt
-RUN --mount=type=bind,source=disks.txt,target=/disks.txt \
-    --mount=type=bind,source=generate-unlock-services.sh,target=/generate-unlock-services.sh \
-    /generate-unlock-services.sh
