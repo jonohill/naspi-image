@@ -31,8 +31,8 @@ FROM base
 COPY root/ /
 
 RUN dnf install -y \
-        epel-release \
-        gettext \
+    epel-release \
+    gettext \
     git \
     jq
 
