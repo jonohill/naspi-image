@@ -1,0 +1,16 @@
+[Unit]
+Description=Cloudflare Tunnel for NAS
+After=network-online.target
+
+[Container]
+Image=cloudflare/cloudflared:2025.4.2
+GlobalArgs=--storage-opt=additionalimagestore=/usr/lib/bootc/storage
+Network=host
+Exec=tunnel --no-autoupdate run --token ${NAS_TUNNEL_TOKEN}
+
+[Service]
+Restart=always
+TimeoutStartSec=900
+
+[Install]
+WantedBy=multi-user.target default.target

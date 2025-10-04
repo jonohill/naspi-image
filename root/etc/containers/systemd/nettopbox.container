@@ -1,0 +1,20 @@
+[Unit]
+Description=Nettopbox IPTV Service
+After=network-online.target
+
+[Container]
+ContainerName=nettopbox
+Image=ghcr.io/jonohill/nettopbox:0.2.0
+GlobalArgs=--storage-opt=additionalimagestore=/usr/lib/bootc/storage
+PublishPort=53702:53702
+DNS=1.1.1.1
+Environment=NTB_PORT=53702
+Environment=NTB_IPTV_URL=https://i.mjh.nz/nz/raw-tv.m3u8
+Environment=NTB_BASE_URL=http://naspi.mahi-tet.ts.net:53702
+
+[Service]
+Restart=always
+TimeoutStartSec=900
+
+[Install]
+WantedBy=multi-user.target default.target

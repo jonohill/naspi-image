@@ -1,0 +1,22 @@
+[Unit]
+Description=Cloudflare Tunnel for Home Assistant
+After=network-online.target
+
+[Container]
+Image=jonoh/cloudflared:2025.4.2
+GlobalArgs=--storage-opt=additionalimagestore=/usr/lib/bootc/storage
+Network=host
+Volume=./data/cloudflare_homeassistant:/config
+Environment=TZ=Pacific/Auckland
+Environment=TUNNEL_URL=http://localhost:8123
+Environment=ACCOUNT_ID=${CF_ACCOUNT_ID}
+Environment=TUNNEL_NAME=homeassistant
+Environment=TUNNEL_ID=${HOMEASSISTANT_TUNNEL_ID}
+Environment=TUNNEL_SECRET=${HOMEASSISTANT_TUNNEL_SECRET}
+
+[Service]
+Restart=always
+TimeoutStartSec=900
+
+[Install]
+WantedBy=multi-user.target default.target

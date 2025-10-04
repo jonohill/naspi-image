@@ -1,0 +1,16 @@
+[Unit]
+Description=LibreSpeed Speedtest
+After=network-online.target
+
+[Container]
+Image=linuxserver/librespeed:5.4.20240804
+GlobalArgs=--storage-opt=additionalimagestore=/usr/lib/bootc/storage
+PublishPort=80:80
+Environment=TZ=Pacific/Auckland
+
+[Service]
+Restart=always
+TimeoutStartSec=900
+
+[Install]
+WantedBy=multi-user.target default.target

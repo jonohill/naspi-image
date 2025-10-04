@@ -1,0 +1,15 @@
+[Unit]
+Description=Cloudflare Tunnel for Browser
+After=network-online.target
+
+[Container]
+Image=cloudflare/cloudflared:2025.4.2
+GlobalArgs=--storage-opt=additionalimagestore=/usr/lib/bootc/storage
+Exec=tunnel --no-autoupdate run --token ${BROWSER_TUNNEL_TOKEN}
+
+[Service]
+Restart=always
+TimeoutStartSec=900
+
+[Install]
+WantedBy=multi-user.target default.target

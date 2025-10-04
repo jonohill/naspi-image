@@ -1,0 +1,15 @@
+[Unit]
+Description=SOCKS Proxy
+After=network-online.target
+
+[Container]
+Image=jonoh/socks:1.4.3
+GlobalArgs=--storage-opt=additionalimagestore=/usr/lib/bootc/storage
+PublishPort=1080:1080
+
+[Service]
+Restart=always
+TimeoutStartSec=900
+
+[Install]
+WantedBy=multi-user.target default.target

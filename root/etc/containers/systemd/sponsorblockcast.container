@@ -1,0 +1,17 @@
+[Unit]
+Description=SponsorBlockCast
+After=network-online.target
+
+[Container]
+Image=erdnaxeli/castblock:latest
+GlobalArgs=--storage-opt=additionalimagestore=/usr/lib/bootc/storage
+Network=host
+AddCapability=CAP_NET_ADMIN
+Exec=--mute-ads
+
+[Service]
+Restart=always
+TimeoutStartSec=900
+
+[Install]
+WantedBy=multi-user.target default.target

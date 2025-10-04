@@ -1,0 +1,22 @@
+[Unit]
+Description=Homebridge
+After=network-online.target
+
+[Container]
+Image=homebridge/homebridge:2025-08-29
+GlobalArgs=--storage-opt=additionalimagestore=/usr/lib/bootc/storage
+Network=host
+Volume=./data/homebridge:/homebridge
+Environment=TZ=Pacific/Auckland
+Environment=PGID=1000
+Environment=PUID=1000
+Environment=HOMEBRIDGE_CONFIG_UI=1
+Environment=HOMEBRIDGE_INSECURE=1
+Environment=HOMEBRIDGE_CONFIG_UI_PORT=8581
+
+[Service]
+Restart=always
+TimeoutStartSec=900
+
+[Install]
+WantedBy=multi-user.target default.target

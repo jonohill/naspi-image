@@ -1,0 +1,19 @@
+[Unit]
+Description=Home Assistant
+After=network-online.target
+
+[Container]
+Image=ghcr.io/home-assistant/home-assistant:2025.5.1
+GlobalArgs=--storage-opt=additionalimagestore=/usr/lib/bootc/storage
+Network=host
+Volume=./data/homeassistant:/config
+Environment=TZ=Pacific/Auckland
+Environment=PGID=1000
+Environment=PUID=1000
+
+[Service]
+Restart=always
+TimeoutStartSec=900
+
+[Install]
+WantedBy=multi-user.target default.target

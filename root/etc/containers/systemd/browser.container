@@ -1,0 +1,23 @@
+[Unit]
+Description=Remote Desktop Browser (Fedora KDE)
+After=network-online.target
+
+[Container]
+ContainerName=browser
+Image=lscr.io/linuxserver/rdesktop:fedora-kde
+GlobalArgs=--storage-opt=additionalimagestore=/usr/lib/bootc/storage
+SecurityLabelDisable=true
+PublishPort=3389:3389
+AddDevice=/dev/dri:/dev/dri
+Volume=./data/browser:/config
+Environment=PUID=1000
+Environment=PGID=1000
+Environment=TZ=Pacific/Auckland
+PodmanArgs=--shm-size=1gb
+
+[Service]
+Restart=unless-stopped
+TimeoutStartSec=900
+
+[Install]
+WantedBy=multi-user.target default.target
