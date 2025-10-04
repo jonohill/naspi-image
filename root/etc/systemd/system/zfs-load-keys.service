@@ -1,7 +1,7 @@
 [Unit]
 Description=Load ZFS encryption keys
 DefaultDependencies=no
-After=zfs-import.target download-secrets.service
+After=zfs-import.target download-secrets.service systemd-tmpfiles-setup.service
 Before=zfs-mount.service
 Requires=download-secrets.service
 
