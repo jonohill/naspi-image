@@ -3,7 +3,7 @@ Description=Cloudflare Tunnel for Home Assistant
 After=network-online.target
 
 [Container]
-Image=jonoh/cloudflared:2025.4.2
+Image=jonoh/cloudflared:2025.10.0
 GlobalArgs=--storage-opt=additionalimagestore=/usr/lib/bootc/storage
 Network=host
 Volume=./data/cloudflare_homeassistant:/config
