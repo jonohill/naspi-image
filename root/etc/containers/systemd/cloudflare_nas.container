@@ -3,7 +3,7 @@ Description=Cloudflare Tunnel for NAS
 After=network-online.target
 
 [Container]
-Image=cloudflare/cloudflared:2025.4.2
+Image=cloudflare/cloudflared:2025.10.0
 GlobalArgs=--storage-opt=additionalimagestore=/usr/lib/bootc/storage
 Network=host
 Exec=tunnel --no-autoupdate run --token ${NAS_TUNNEL_TOKEN}
