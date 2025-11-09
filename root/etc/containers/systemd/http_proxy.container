@@ -3,7 +3,7 @@ Description=HTTP Proxy with Tailscale
 After=network-online.target
 
 [Container]
-Image=ghcr.io/jonohill/nas-proxy:29
+Image=ghcr.io/jonohill/nas-proxy:33
 GlobalArgs=--storage-opt=additionalimagestore=/usr/lib/bootc/storage
 Volume=./data/http_proxy:/config
 Environment=TS_AUTHKEY=${PROXY_TS_AUTHKEY}
