@@ -3,7 +3,7 @@ Description=SOCKS Proxy
 After=network-online.target
 
 [Container]
-Image=jonoh/socks:1.4.3
+Image=jonoh/socks:1.4.4
 GlobalArgs=--storage-opt=additionalimagestore=/usr/lib/bootc/storage
 PublishPort=1080:1080
 
