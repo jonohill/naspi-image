@@ -3,7 +3,7 @@ Description=LibreSpeed Speedtest
 After=network-online.target
 
 [Container]
-Image=linuxserver/librespeed:5.4.20240804
+Image=linuxserver/librespeed:5.5.1
 GlobalArgs=--storage-opt=additionalimagestore=/usr/lib/bootc/storage
 PublishPort=80:80
 Environment=TZ=Pacific/Auckland
